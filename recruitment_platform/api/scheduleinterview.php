@@ -62,16 +62,6 @@ if (!in_array($currentStage, $validStages, true)) {
     exit;
 }
 
-// Check if interview already exists
-$sqlCheckInterview = "SELECT interview_id FROM interview WHERE appli_id = :application_id";
-$stmtCheckInterview = $conn->prepare($sqlCheckInterview);
-$stmtCheckInterview->execute([':application_id' => $application_id]);
-if ($stmtCheckInterview->fetch()) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Interview already scheduled for this application']);
-    exit;
-}
-
 $recruiterCheck = $conn->prepare("SELECT user_id, role FROM `User` WHERE user_id = :id LIMIT 1");
 $recruiterCheck->execute([':id' => $interviewer_id]);
 $interviewer = $recruiterCheck->fetch(PDO::FETCH_ASSOC);
@@ -88,7 +78,7 @@ $sql = "INSERT INTO interview (appli_id, interviewer_id, interview_date)
 $stmt = $conn->prepare($sql);
 $stmt->execute([
     ':application_id' => $application_id,
-    ':interviewer_id' => $user_id,
+    ':interviewer_id' => $interviewer_id,
     ':interview_date' => $interview_date
 ]);
 

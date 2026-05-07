@@ -45,6 +45,7 @@ LEFT JOIN (
         GROUP BY app_id
     ) latest ON latest.latest_history_id = ah.application_history_id
 ) latest_stage ON latest_stage.app_id = a.application_id
+WHERE latest_stage.stage = 'interviews'
 ORDER BY i.interview_date DESC";
 
 $stmt = $conn->prepare($sql);
